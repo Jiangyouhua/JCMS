@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js"></script>
+    <script src="user.js"></script>
+    <script src="default.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="default.css">
+</head>
+
+<body>
+
+    <div class="top">
+        <!--状态栏-->
+        <div class="container">
+            <span class="col-md-5 col-sm-5">欢迎来到博看网</span>
+            <part data-name="PartUserLi" data-source='UserMenu' data-class="user" class="col-md-7"></part>
+        </div>
+    </div>
+
+    <div class="container">
+        <!--页面头-->
+        <div id="header">
+            <part data-name="PartLog" data-source='OrgProduct/LogInstance' data-class='nav-log' class="col-md-6"></part>
+            <part data-name="PartSearch" class="col-md-6" data-attr="name=search" data-class="searching" data-operate='{"search":".search"}' class="preview-area"></part>
+        </div>
+    </div>
+    <div class="top-nav">
+        <div id="nav" class="container">
+            <!--导航栏-->
+            <part data-name="PartMenu" data-source='WebNav' data-class="nav-items"></part>
+        </div>
+    </div>
+
+
+            
+    <div class="container">
+        <!--杂志区 预览-->
+        <div style="clear:both">
+                <part data-name="PartArticle" data-source='IssueInfo/ArticleShow/genre/4/iid/0' data-config='{"column":6}' class="preview-area"></part>
+        </div>
+
+        <!--友情连接-->
+        <!--<h5 style="padding:10px 0 5px;border-bottom:1px solid #ccc;">友情链接</h5>
+        <part data-name="PartArticle" data-source='IssueInfo/NoTitle/genre/4/iid/97' data-class="links"></part>-->
+
+        <!--底部菜单-->
+        <div style="clear:both;">
+            <part data-name="PartMenu" data-source='BottomMenu' data-class="nav nav-pills bottom"></part>
+        </div>
+        
+
+        <div style="clear:both">
+            <!--连接方式-->
+            <part data-name="PartArticle" data-source='IssueInfo/NoTitle/genre/4/iid/98' data-class="footer"></part>
+        </div>
+    </div>
+</body>
+</html> 

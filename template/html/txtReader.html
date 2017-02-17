@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js?20170105"></script>
+    <script src="user.js?20170105"></script>
+    <script src="default.js?20170105"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="swiper.min.css">
+    <link rel="stylesheet" href="default.css?20170105">
+    <style type="text/css">
+        body {
+            font-size: 4rem;
+            /*overflow: hidden;*/
+        }
+        
+        a:hover {
+            color: #444;
+            text-decoration: none;
+        }
+        /* 鼠标指针移动到链接上 */
+        
+        h1 {
+            font-size: 5rem;
+            padding: 100px 0 50px 0;
+        }
+        
+        #area iframe {
+            border: none;
+        }
+        
+        #prev {
+            left: 40px;
+        }
+        
+        #next {
+            right: 40px;
+        }
+        
+        .arrow:hover {
+            color: #777;
+        }
+        
+        .arrow:active {
+            color: #000;
+        }
+        /*pc*/
+        
+        .pc div.catalog {
+            display: flex;
+            position: absolute;
+            left: 150px;
+            top: 150px;
+            background: #ddd;
+            border: 1px #888 solid;
+            overflow-y: hidden;
+            z-index: 999;
+            font-size: 3rem;
+        }
+        
+        .content {
+            z-index: 1;
+        }
+        
+        #content {
+            width: 80%;
+            margin: 50px 10%;
+        }
+        
+        .pc .pc-catalog ul {
+            list-style: none;
+        }
+        
+        .pc .pc-catalog li {
+            word-break: keep-all;
+            /* 不换行 */
+            white-space: nowrap;
+            /* 不换行 */
+            overflow: hidden;
+            /* 内容超出宽度时隐藏超出部分的内容 */
+            text-overflow: ellipsis;
+            /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使用。*/
+        }
+        
+        .pc .pc-catalog>ul>li>a {
+            color: #000;
+        }
+        
+        .pc .pc-catalog>ul>li>a:hover {
+            text-decoration: none
+        }
+        
+        .pc .pc-catalog>ul {
+            float: left;
+            width: 41rem;
+            line-height: 3.5rem;
+            margin: 4rem 0 0 5rem;
+            overflow: hidden;
+            width: 70rem!important;
+            line-height: 6rem!important;
+            margin: 8rem 10rem 0 0!important;
+        }
+        /* IE */
+        
+        _:-ms-lang(x),
+        _:-webkit-full-screen,
+        .pc .pc-catalog>ul {
+            float: left;
+            width: 70rem;
+            line-height: 6rem;
+            margin: 12rem 0 0 8rem;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+        // 阅读页工具
+        d.ToolIReader = [{
+            id: 1,
+            href: "#",
+            name: "返回",
+            onclick: "window.history.back(); return false;"
+        }, {
+            id: 1,
+            href: "#",
+            name: "封面",
+            onclick: "treader.goto(2); return false;"
+        }, {
+            id: 1,
+            href: "#",
+            name: "往期",
+            onclick: "e.issues(); return false;"
+        }, {
+            id: 1,
+            href: "#",
+            name: "收藏",
+            onclick: "e.CollectAdd(0); return false;"
+        }, {
+            id: 1,
+            href: "#",
+            name: "目录",
+            onclick: "$('.catalog').show(); return false;"
+        }, ]
+        var url = new Url()
+        if (url.GetGenre() == 3) {
+            delete d.ToolIReader[2]
+        }
+        var web = Session.Get("web")
+        if (!!web.base.type && web.base.type == 1) {
+            delete d.ToolIReader[3]
+        }
+    </script>
+</head>
+
+
+<body onselectstart="return false">
+    <div class='pc'>
+        <img class="load" style="width:10rem; height:10rem; margin-left:50%; left:-5rem; top:50rem; position:fixed" src="load.gif">
+        <!--页面-->
+        <div id="prev" onclick="treader.prev();" class="arrow">‹</div>
+        <div id="content">
+
+        </div>
+        <div id="next" onclick="treader.next();" class="arrow">›</div>
+
+        <!--目录-->
+        <div class="catalog">
+            <button class="catalog-btn" type="button" onclick="$('.catalog').hide()">×</button>
+            <part id="catalog"></part>
+        </div>
+
+        <!--菜单-->
+        <div class="tool">
+            <part data-name="PartMenu" data-source='ToolIReader' data-goto="preview" data-class="read"></part>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">系统提示</h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-buy">立即购买</button>
+                    <button type="button" class="btn btn-join">加入购物车</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<!-- Swiper JS -->
+<script src="swiper.min.js"></script>
+<!-- Initialize Swiper -->
+<script>
+    //样式处理
+    $('.btn-buy').click(function() {
+        var url = new Url()
+        var genre = url.GetGenre()
+        var iid = url.GetIid()
+        e.BuyItem(this, genre, iid)
+    });
+    $('.btn-join').click(function() {
+        var url = new Url()
+        var genre = url.GetGenre()
+        var iid = url.GetIid()
+        e.AddCart(this, genre, iid)
+    });
+
+    var padding = 300
+    if (!isWebp) {
+        padding = 300
+    }
+
+    //目录
+    $(".catalog").css("width", Web.w - 300)
+    $(".catalog").css("height", Web.h - 300)
+    $("#content").css("height", Web.h)
+    $(".pc-catalog>ul").css("height", Web.h - 300)
+    $(".catalog").css("left", padding / 2)
+    $(".catalog").css("top", padding / 2)
+
+    // 原貌阅读器处理类
+    var treader = {
+        current: 2, //当前页面
+        issue: {},
+        prev: function() {
+            this.current--
+                if (!!$("#catalog_" + this.current).next()[0]) {
+                    this.current--
+                }
+            if (this.current < 2) {
+                this.current = 2
+                Web.Alert("已是最前一页，请留意")
+                return
+            }
+            this.text()
+        },
+        next: function() {
+            var n = this.current + 1
+            if (!$("#catalog_" + n)[0]) {
+                Web.Alert("已是最后一页，请留意")
+                return
+            }
+            this.current = n
+            this.text()
+        },
+        goto: function(index) {
+            this.current = index
+            this.text()
+        },
+        page: function(id) {
+            $('.catalog').hide()
+            this.text(id)
+        },
+        index: function(id) {
+            if (!id) {
+                id = $("#catalog_" + this.current).attr("onclick").match(/\d+/g)[0]
+            }
+            if (!!$("#catalog_" + this.current).next()[0]) {
+                this.current++
+                    id = $("#catalog_" + this.current).attr("onclick").match(/\d+/g)[0]
+            }
+            return id
+        },
+        text: function(id) {
+            if (!e.role(treader.issue.resourceId, treader.issue.issueId, treader.current, parseInt(treader.issue.toll) + 3)) {
+                return
+            }
+            $(".load").show()
+            id = this.index(id)
+            $.post(window.location.href, {
+                handle: "PaperText",
+                text: id
+            }, function(re) {
+                if (re.status == '0') {
+                    Web.Alert(re.info)
+                    return
+                }
+                var part = new PartArticle()
+                part.SetData(re.data)
+                $("#content").html(part.Html().String())
+                $(".load").hide()
+            }, 'json')
+        },
+        catalog: function() {
+            if (!e.OtherRole(treader.issue.resourceId, treader.issue.issueId)) {
+                return
+            }
+            $('.catalog').show()
+        },
+        init: function() {
+            //期册信息
+            $.post(window.location.href, {
+                handle: "IssueInfo"
+            }, function(re) {
+                if (re.status == 0) {
+                    Web.Alert(re.info)
+                }
+                treader.issue = re.data.length == 1 ? re.data[0] : re.data
+
+                // 目录
+                $.post(window.location.href, {
+                    handle: "IssueCatalog"
+                }, function(re) {
+                    if (re.status == 0) {
+                        Web.Alert(re.info)
+                        return
+                    }
+                    var part = new PartCatalog()
+                    part.SetData(re.data)
+                    part.SetClass("pc-catalog")
+                    if (re.data && re.data[0].sublevels && re.data[0].sublevels.length > 0) {
+                        treader.text(re.data[0].sublevels[0].id)
+                        treader.current = 2
+                    } else {
+                        treader.text(re.data[0].id)
+                        treader.current = 1
+                    }
+                    $("#catalog").html(part.Html().String())
+                    setTimeout(function() {
+                        var d = $(".pc-catalog>ul")
+                        $(".pc-catalog").css("width", d.length * 85 + "rem")
+                    }, 100)
+                    e.LastReaderAdd(0)
+                }, 'json')
+            }, "json")
+        }
+    }
+
+    treader.init()
+</script>

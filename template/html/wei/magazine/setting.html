@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no, initial-scale=1">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js"></script>
+    <script src="user.js"></script>
+    <script src="default.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="default.css">
+</head>
+
+<body>
+    <!--标题栏-->
+    <table id="layout-body">
+        <!--资源预览-->
+        <tr>
+            <td>
+                <div class="col-sm-4">
+                    <p></p>
+                    <p style="text-align:left">新设密码：<input type="password" name="password" class="form-control"></p>
+                    <p style="text-align:left">重复输入：<input type="password" name="password1" class="form-control"></p>
+                    <p><input type="button" class="btn btn-info" value="确定" onclick="e.PassWord()"></p>
+                </div>
+            </td>
+        </tr>
+        <!--底部菜单1-->
+        <tr>
+            <td class="body-bottom" colspan="2">
+                <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:#E0E0E0">
+                    <div>
+                        <part data-name="PartMenu" data-source='ToolBottom' data-class="nav nav-pills bottom" data-goto="index"></part>
+                    </div>
+                </nav>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

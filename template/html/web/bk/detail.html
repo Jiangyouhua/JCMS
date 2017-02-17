@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js"></script>
+    <script src="user.js"></script>
+    <script src="default.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="default.css?1">
+</head>
+
+<body>
+    <div class="top">
+        <!--状态栏-->
+        <div class="container">
+            <span class="col-md-5 col-sm-5">欢迎来到博看网</span>
+            <part data-name="PartUserLi" data-source='UserMenu' data-class="user" class="col-md-7 col-sm-7"></part>
+        </div>
+    </div>
+
+    <div class="container">
+            <!--页面头-->
+            <div id="header">
+                <part data-name="PartLog" data-source='OrgProduct/LogInstance' data-class='nav-log' class="col-md-6 col-sm-6"></part>
+                <part data-name="PartSearch" class="col-md-6 col-sm-6" data-class="searching" data-operate='{"search":".search"}'></part>
+            </div>
+    </div>
+
+    <div class="top-nav">
+        <div id="nav" class="container">
+            <!--导航栏-->
+            <part data-name="PartMenu" data-source='WebNav' data-class="nav-items"></part>
+        </div>
+    </div>
+    <div class="container">
+        <div id='WebBreadcrumbs' class="col-md-12"></div>
+        <div style="clear:both;margin-top:10px;"></div>
+        <!--杂志-->
+        <div style="width:150px;float:left">
+            <!--杂志区 索引-->
+            <div>
+                <div class="list-title" id="detail"></div>
+                <part data-name="PartList" data-source='CategorySub/MagazineCategory/genre/1/category/159,236,243,259,262,268,272,274,279,283,287,289,294' data-class="sub-cate-items " id="magazines"></part>
+                <part data-name="PartList" data-source='CategorySub/MagazineCategory/genre/3/category/1724,2221,2230,2240,2244,2253,2259,2271' data-class="sub-cate-items" id="books" style="display:none"></part>
+            </div>
+            <div>
+                <h4 class="rank-title">热门排行</h4>
+                <part data-name="PartMenu" data-source='CategoryIssue/ListItems/genre/0/category/313,2279' data-class="rank"></part>
+            </div>
+        </div>
+        <div class="detailing">
+            <!--资源区 信息浏览-->
+            
+            <part data-name="PartDetail" data-source='IssueInfo/DetailShow/genre/0/iid/0' data-operate='{"AddCart":"genre,iid","BuyItem":"genre,iid"}' class="preview-area" data-class="cover"></part>
+            <div class="contenting">目录</div>
+            <part data-name="PartList" data-source='IssueCatalog/CatalogItems/genre/0/iid/0' data-operate='{"AddCart":"genre,iid","BuyItem":"genre,iid"}' class="preview-area"  data-class="contents"></part>
+        </div>
+        <div style="clear:both">
+            <!--友情连接-->
+            <!--<h5 style="padding:10px 0 5px;border-bottom:1px solid #ccc;">友情链接</h5>
+            <part data-name="PartArticle" data-source='IssueInfo/NoTitle/genre/4/iid/97' data-class="links"></part>-->
+
+            <!--底部菜单-->
+            <div style="clear:both;">
+                <part data-name="PartMenu" data-source='BottomMenu' data-class="nav nav-pills bottom"></part>
+            </div>
+
+
+            <div style="clear:both">
+                <!--连接方式-->
+                <part data-name="PartArticle" data-source='IssueInfo/NoTitle/genre/4/iid/98' data-class="footer"></part>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

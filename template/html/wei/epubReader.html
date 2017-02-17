@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="default.css?20170105">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="system.js?20170105"></script>
+    <script src="user.js?20170105"></script>
+    <script src="epub.js"></script>
+    <script src="default.js?20170105"></script>
+    <script src="hammer.min.js"></script>
+</head>
+<style type="text/css">
+    html,
+    html* {
+        overflow: hidden;
+    }
+    
+    body {
+        font-size: rem;
+        overflow: hidden;
+    }
+    
+    .swiper-wrapper {
+        z-index: 1;
+    }
+    
+    ul.nav {
+        padding: 0;
+        margin: 0;
+        position: fixed;
+        bottom: 0;
+        line-height: 3rem;
+        z-index: 99;
+        width: 100%;
+        padding-left: 5px;
+        text-align: center;
+    }
+    
+    .catalog {
+        position: fixed;
+        bottom: 3.5rem;
+        padding: .2rem .5rem 1rem;
+        line-height: 2rem;
+        z-index: 99;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background-color: #f2f2f2;
+        font-size: 1.2rem;
+        display: none;
+    }
+    
+    .pc-catalog>ul {
+        list-style: none;
+        margin: 0;
+        padding-left: 1rem
+    }
+    
+    .pc-catalog>ul>li>a {
+        color: #000;
+    }
+    
+    #content {
+        padding: 6% 1% 7% 14%;
+        font-size: 1.2rem
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+    
+    #main {
+        position: absolute;
+        width: 100%;
+    }
+    
+    #area {
+        padding: 10px;
+        /*该数值为固定值，参考epub.js,line5889最后被减的值*/
+        height: 100%;
+        max-width: 1500px;
+    }
+    
+    #area iframe {
+        border: none;
+    }
+    
+    .catalog-btn {
+        width: 2rem;
+        height: 2rem;
+        position: fixed;
+        right: 0;
+        border-radius: 1rem;
+        font-size: 1rem;
+        border: 1px #ddd solid;
+        line-height: 1.5rem;
+        background: #9cb4b5;
+        text-align: center;
+    }
+    
+    #content {
+        position: fixed;
+        top: 0;
+        left: 0;
+    }
+</style>
+
+<body>
+    <img class="load" style="width:10rem; height:10rem; margin-left:50%; left:-5rem; top:10rem; position:fixed" src="load.gif">
+    <!--阅读区-->
+    <div id="main">
+        <div id="area"></div>
+    </div>
+    <div id="content"></div>
+    <!--目录-->
+    <div class="catalog">
+        <button class="catalog-btn" type="button" onclick="$('.catalog').hide()">X</button>
+        <div id="catalog"></div>
+    </div>
+
+    <div id="tabs">
+        <!--菜单-->
+        <part data-name="PartMenu" data-source='ToolIReader' data-goto="preview" data-class="nav nav-pills nav-justified" class="tool-bar"></part>
+    </div>
+    <!-- 登录 -->
+    <part data-name="PartWLogin" data-class="login" data-source='Login' style="display: none; position: fixed; width:100%; height:100%; top:0; left:0"></part>
+</body>
+
+</html>
+<script>
+    var rem = Math.floor(Web.w / 25)
+    $("html").css("font-size", rem)
+    $("body").css("width", Web.w)
+    $(".catalog").css("width", Web.w)
+    $(".catalog").css("height", Web.h * 0.7)
+    $("#content").css("width", Web.w)
+    $("#content").css("height", Web.h)
+    $("#main").css("height", Web.h - 3.5 * rem)
+
+    d.ToolIReader = [{
+        id: 1,
+        href: "#",
+        name: "返回",
+        onclick: "e.backFromReader(); return false;"
+    }, {
+        id: 2,
+        href: "#",
+        name: "封面",
+        onclick: "ereader.goto(0); return false;"
+    }, {
+        id: 3,
+        href: "#",
+        name: "往期",
+        onclick: "e.issues(); return false;"
+    }, {
+        id: 4,
+        href: "#",
+        name: "目录",
+        onclick: "ereader.catalog(); return false"
+    }, ]
+
+    var url = new Url()
+    if (url.GetGenre() == 3) {
+        delete d.ToolIReader[2]
+    }
+
+    var ereader = {
+        epubjsUrlImportTimes: 0,
+        root: window.location.hash.indexOf("page") < 0 ? "" : window.location.hash,
+        pre: 0,
+        current: 0,
+        data: [],
+        issue: {},
+        //epub 按篇实现分享
+        share: function(url) {
+            if (!!ereader.epubjsUrlImportTimes) {
+                ereader.epubjsUrlImportTimes = 0
+                return
+            }
+            ereader.epubjsUrlImportTimes++
+                var a = url.split("/OEBPS/")
+            if (a.length < 2) {
+                return
+            }
+            window.location.hash = "page@" + a[1]
+        },
+        issues: function() {
+            var url = new Url()
+            window.location.href = url.Path("issue/0/0/" + this.data.resourceId)
+        },
+        goto: function(index) {
+            var key = ""
+            if (!isNaN(index)) {
+                key = ereader.data[index].page
+            } else {
+                key = index.split("#")[0]
+            }
+
+            $('.catalog').hide()
+            Book.goto(key)
+            if (index == 0) {
+                setTimeout(function() {
+                    Book.prevPage()
+                }, 200)
+            }
+        },
+        Recursion: function(dom) {
+            if (!dom) {
+                return
+            }
+            var a = {
+                page: "",
+                name: "",
+                sublevels: []
+            }
+            for (var x in dom.children) {
+                var obj = dom.children[x]
+                if (obj.tagName == "navLabel") {
+                    a.name = obj.getElementsByTagName('text')[0].innerHTML
+                    continue
+                }
+                if (obj.tagName == "content") {
+                    a.page = obj.getAttribute('src')
+                    continue
+                }
+                if (obj.tagName == "navPoint") {
+                    a.sublevels.push(ereader.Recursion(obj))
+                }
+            }
+            return a
+        },
+        catalog: function() {
+            if (!e.OtherRole(ereader.issue.resourceId, ereader.issue.issueId)) {
+                return
+            }
+            $('.catalog').show()
+        },
+    }
+
+    e.role = function(mid, iid, page, end, next) {
+        // 分享页判断
+        if (page >= 0 && page <= end) {
+            if (!!ereader.root) {
+                if (ereader.root == window.location.hash) {
+                    ereader.pre = ereader.current
+                    return true
+                }
+                if ((!!next && ereader.pre >= ereader.current) || (!next && ereader.pre >= ereader.current)) {
+                    return true
+                }
+            } else {
+                return true
+            }
+        }
+
+        return e.OtherRole(mid, iid)
+    }
+
+    var url = new Url()
+    var mid = url.GetMid()
+    var iid = url.GetIid()
+    var Book
+    $.post(window.location.href, {
+        handle: "IssueInfo"
+    }, function(re) {
+        if (re.status == 0) {
+            Web.Alert("数据加载失败，请留意")
+            return
+        }
+        var obj = re.data[0]
+        ereader.issue = obj
+        document.title = document.title + "：《" + obj.resourceName + "》"
+        var h = obj.hash.split(",")
+        var dir = d.isUseRedirect ? d.imageResource.epub + "epub" + obj.html + "/" + obj.resourceId + "/" + obj.resourceId + "-" + obj.issueId + "/" + obj.issueId + "_" + h[0] + "/" : "/epub/" + n + "/" + mid + "/" + iid + "/"
+        if (obj.resourceType === '2') {
+            dir = d.isUseRedirect ? d.imageResource.epub + "paper" + obj.html + "/epub/" + obj.resourceId + "/" + obj.resourceId + "-" + obj.issueId + "/" + obj.issueId + "_" + h[0] + "/" : "/epub/" + n + "/" + mid + "/" + iid + "/"
+        }
+        Book = ePub(dir, {
+            //            width: Web.w - 50,
+            spreads: false,
+        })
+
+        Book.setStyle("line-height", "1.5rem")
+        Book.renderTo("area")
+
+        // 分享
+        if (!!ereader.root) {
+            var a = ereader.root.split("@")
+            if (a.length > 1 && !Session.Get("user")) {
+                Book.goto(a[1])
+                $("[data-name='PartMenu']").hide()
+            }
+        }
+
+        //目录
+        $.get(dir + "OEBPS/toc.ncx", function(re) {
+            $(".load").hide()
+            var data = e.tocToCatalog(re)
+            console.log(data)
+            e.FormatPartCatalog(data)
+        })
+
+        // 跳转原貌阅读
+        if (obj.webp == "0") {
+            return
+        }
+        d.ToolIReader.push({
+            id: 5,
+            href: window.location.pathname.replace("epubReader", "imageReader"),
+            name: "原貌",
+        })
+        if ($(".tool-bar").length > 0 && $(".tool-bar").html() != "") {
+            Web.Update('.tool-bar', 0)
+        }
+    }, "json")
+
+
+    $("#content").click(function() {
+        $(".catalog").hide()
+    })
+
+    var hammertime = new Hammer(document.getElementById("content"));
+    hammertime.on("swipeleft", function(re) {
+        if (ereader.current < 0) {
+            ereader.current = 0
+        }
+        ereader.current++
+            if (ereader.current > ereader.issue.toll) {
+                ereader.current = parseInt(ereader.issue.toll) + 1
+            }
+        if (!e.role(ereader.issue.resourceId, ereader.issue.issueId, ereader.current, ereader.issue.toll, 1)) {
+            return
+        }
+        Book.nextPage()
+    });
+    hammertime.on("swiperight", function(re) {
+        ereader.current--
+            if (ereader.current < 0) {
+                ereader.current = -1
+            }
+        if (!e.role(ereader.issue.resourceId, ereader.issue.issueId, ereader.current, ereader.issue.toll, 0)) {
+            return
+        }
+        Book.prevPage()
+    })
+
+    e.UserFromTouchQrcode()
+</script>

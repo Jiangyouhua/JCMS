@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="swiper.min.css">
+    <link rel="stylesheet" href="default.css?20170105">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js?20170105"></script>
+    <script src="user.js?20170105"></script>
+    <script src="default.js?20170105"></script>
+
+    <style type="text/css">
+        body {
+            font-size: 1rem;
+        }
+        
+        .swiper-wrapper {
+            z-index: 1;
+        }
+        
+        .nav {
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            line-height: 2rem;
+            z-index: 99;
+            text-align: center;
+        }
+        
+        .catalog {
+            position: fixed;
+            bottom: 3.5rem;
+            padding: .2rem .5rem 1rem;
+            line-height: 2rem;
+            z-index: 99;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background-color: #f6f6f6;
+            display: none;
+        }
+        
+        .pc-catalog>ul {
+            list-style: none;
+            margin: 0;
+            padding-left: 1rem;
+            padding-bottom: 1rem
+        }
+        
+        .pc-catalog>ul>li>a {
+            color: #000;
+        }
+        
+        .catalog-btn {
+            width: 2rem;
+            height: 2rem;
+            position: fixed;
+            right: 0;
+            border-radius: 1rem;
+            border: 1px #ddd solid;
+            line-height: 1.5rem;
+            background: #9cb4b5;
+        }
+        
+        #full-view {
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 9999;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class='mo'>
+        <!--页面-->
+        <div id='slider'>
+            <ul style="background: #fff; margin:0; padding:0"></ul>
+        </div>
+
+        <!--目录-->
+        <div class="catalog">
+            <button class="catalog-btn" type="button" onclick="$('.catalog').hide()">X</button>
+            <part data-name="PartCatalog" data-source='IssueCatalog/CatalogItems' data-goto="preview" data-class="pc-catalog"></part>
+        </div>
+
+        <!--菜单-->
+        <part data-name="PartMenu" data-source='ToolIReader' data-goto="preview" data-class="nav nav-pills nav-justified" class="tool-bar"></part>
+        <div id="full-view"><img src="" /></div>
+    </div>
+    <img class="load" style="width:10rem; height:10rem; margin-left:50%; left:-5rem; top:10rem; position:fixed" src="load.gif">
+    <part data-name="PartWLogin" data-class="login" data-source='Login' style="display: none;"></part>
+</body>
+
+</html>
+
+<!-- Swiper JS -->
+<script src="swipe.js"></script>
+<script src="pinchzoom.js"></script>
+<!-- Initialize Swiper -->
+<script>
+    var rem = Math.floor(Web.w / 25)
+    $("html").css("font-size", rem);
+    //样式处理
+    //目录
+    $(".catalog").css("width", Web.w)
+    $(".catalog").css("height", Web.h * 0.7)
+
+    // 阅读页工具
+    d.ToolIReader = [{
+        id: 1,
+        href: "#",
+        name: "返回",
+        onclick: "e.backFromReader(); return false;"
+    }, {
+        id: 2,
+        href: "#",
+        name: "封面",
+        onclick: "ireader.goto(0); return false;"
+    }, {
+        id: 3,
+        href: "#",
+        name: "往期",
+        onclick: "e.issues(); return false;"
+    }, {
+        id: 4,
+        href: "#",
+        name: "目录",
+        onclick: "ireader.catalog(); return false;"
+    }, ]
+
+    var url = new Url()
+    if (url.GetGenre() == 3) {
+        delete d.ToolIReader[2]
+    }
+
+    // 原貌阅读器处理类
+    var ireader = {
+        m: 1, // 显示页页数，
+        pages: [], //初始化至内存的页面
+        current: 0, //当前页面
+        issue: {}, //期数据
+        step: 400, //左右留白
+        swiper: {},
+        flatCatalogs: [], // 扁平化目录
+        start: 0,
+        end: 0,
+
+        prev: function() {
+            this.swiper.prev()
+        },
+        next: function() {
+            this.swiper.next()
+        },
+        goto: function(index) {
+            ireader.current = index
+            this.image()
+            this.swiper.slide(index, 1000)
+        },
+        page: function(index) {
+            $(".catalog").hide()
+            var p = parseInt(index) + parseInt(this.issue.start) - 1;
+            this.goto(p)
+        },
+        image: function() {
+            // 滑动时检测目录是否加载完毕
+            if (this.flatCatalogs.length <= 0) {
+                try {
+                    var catalogs = Session.Get('catalog' + this.issue.issueId);
+                    ireader.platCatelog(JSON.parse(catalogs));
+                } catch (e) {
+                    console.log(e)
+                }
+            }
+
+            if (this.start > 0 && (this.start == ireader.current)) {
+                this.swiper.slide(ireader.current)
+            }
+
+            if (!e.role(ireader.issue.resourceId, ireader.issue.issueId, ireader.current, ireader.end, ireader.start, parseInt(ireader.issue.toll))) {
+                if (ireader.current < ireader.start) {
+                    this.swiper.slide(ireader.start, 1000)
+                }
+                if (ireader.current > ireader.end) {
+                    this.swiper.slide(ireader.end, 1000)
+                }
+                // 分享页面数不大于试读页数，权限失败后设置之回退页面，避免空白
+                if (!!parseInt(ireader.issue.toll) && ireader.end - ireader.start > parseInt(ireader.issue.toll)) {
+                    ireader.end = ireader.start + parseInt(ireader.issue.toll);
+                    this.swiper.slide(ireader.end, 1000)
+                }
+                return
+            }
+            var n = 0;
+            for (var i = parseInt(ireader.current) - 2; i <= parseInt(ireader.current) + n; i++) {
+                if (i < 0 || i > this.pages.length - 1) {
+                    continue
+                }
+                if ($("img#" + i).attr('src') != "default.png") {
+                    continue
+                }
+                $("img#" + i).attr('src', this.pages[i])
+            }
+            // 参照目录跳转规则
+            ireader.computeHash(ireader.current - (parseInt(this.issue.start) - 1))
+        },
+        pinch: function() {
+            $('div.pinch-zoom').each(function() {
+                new RTP.PinchZoom($(this), {});
+            });
+            $("#slider").css('height', Web.h)
+            $(".pinch-zoom-container").css('height', Web.h)
+            $(".pinch-zoom-container").css("width", Web.w)
+        },
+        catalog: function() {
+            if (!e.OtherRole(ireader.issue.resourceId, ireader.issue.issueId)) {
+                return
+            }
+            $('.catalog').show()
+        },
+        init: function() {
+            ireader.share()
+            e.LastReaderAdd(0)
+            this.swiper = new Swipe(document.getElementById('slider'), {
+                speed: 400,
+                callback: function(index, elem) {
+                    ireader.current = elem
+                    ireader.image()
+                }
+            })
+        },
+        platCatelog: function(arr) {
+            if (!arr || arr.length <= 0) {
+                return
+            }
+
+            var catalogArr = function(arr) {
+                for (var i in arr) {
+                    if (arr[i].sublevels.length > 0) {
+                        catalogArr(arr[i].sublevels)
+                    } else {
+                        ireader.flatCatalogs.push({
+                            "name": arr[i].name,
+                            "page": parseInt(arr[i].page)
+                        })
+                    }
+                }
+            };
+            catalogArr(arr)
+
+            if (this.flatCatalogs.length > 0) {
+                this.flatCatalogs.sort(e.objSort("page", false))
+            }
+        },
+        // 计算当前页面hash值
+        computeHash: function(currPage) {
+
+            if (!ireader.flatCatalogs || ireader.flatCatalogs.length <= 0) {
+                return
+            }
+
+            // 从封面到第一个目录点
+            if (currPage < ireader.flatCatalogs[0].page) {
+                ireader.set(0, ireader.flatCatalogs[0].page, "");
+                return
+            }
+
+            // 最后一页到结尾页
+            if (currPage >= ireader.flatCatalogs[ireader.flatCatalogs.length - 1].page) {
+                ireader.set(ireader.flatCatalogs[ireader.flatCatalogs.length - 1].page, ireader.issue.count - 1, ireader.flatCatalogs[ireader.flatCatalogs.length - 1].name)
+                return
+            }
+
+            // 在目录中任意位置
+            for (var i = 0; i < ireader.flatCatalogs.length; i++) {
+                if (currPage >= ireader.flatCatalogs[i].page && currPage < ireader.flatCatalogs[i + 1].page) {
+                    // 起始页往前多取一页
+                    if (i + 1 > ireader.flatCatalogs.length - 1) {
+                        i = ireader.flatCatalogs.length - 2
+                    }
+                    if (i - 1 < 0) {
+                        i = 1
+                    }
+                    ireader.set(ireader.flatCatalogs[i].page, ireader.flatCatalogs[i + 1].page, ireader.flatCatalogs[i].name)
+                    return
+                }
+            }
+        },
+        // 设置地址栏以及标题栏
+        set: function(start, end, title) {
+            var web = Session.Get("web")
+            var instanceName = ""
+            if (web != undefined && !!web && !!web.base) {
+                instanceName = web.base.title
+            }
+            document.title = !instanceName ? "" : instanceName + ":《" + ireader.issue.resourceName + "》" + title
+            var a = this.issue.hash.split(',').slice(start + parseInt(ireader.issue.start), end + parseInt(ireader.issue.start)) // 原貌图片hash从第二页开始
+            window.location.hash = "page@" + a.join(",")
+        },
+
+        share: function() {
+            // 确定是否分享页面
+            if (window.location.href.indexOf("page@") > 0) {
+                // 隐藏底部操作栏
+                if (!Session.Get("user")) {
+                    $('*[data-source=ToolIReader]').hide();
+                }
+                var a = window.location.href.split("page@")
+                if (a.length > 1) {
+                    var arr = a[1].split(",");
+                    if (!!ireader.pages) {
+                        for (var i = 0; i < ireader.pages.length; i++) {
+                            if (ireader.pages[i].indexOf(arr[0]) > 0) {
+                                ireader.start = i
+                            }
+                            if (ireader.pages[i].indexOf(arr[arr.length - 1]) > 0) {
+                                ireader.end = i
+                            }
+                        }
+                        ireader.current = parseInt(ireader.start)
+                    }
+                    return
+                }
+            }
+            ireader.start = 0;
+            ireader.end = parseInt(ireader.issue.toll);
+        },
+    };
+
+    // 加载页面处理
+    $.post(window.location.href, {
+        handle: "IssueInfo"
+    }, function(re) {
+        if (re.status == 0) {
+            Web.Alert("加载数据失败，请留意")
+            return
+        }
+        if (!re.data || !re.data[0] || !re.data[0].count) {
+            Web.Alert("加载数据错误，请留意")
+            return
+        }
+        var obj = re.data[0]
+        ireader.issue = re.data.length == 1 ? re.data[0] : re.data
+        var w = Web.w
+        var hash = obj.hash.split(",")
+
+        // 目录扁平化处理
+        try {
+            var catalogs = Session.Get('catalog' + obj.issueId);
+            ireader.platCatelog(JSON.parse(catalogs));
+        } catch (e) {
+            console.log(e)
+        }
+
+        for (var i = 0; i < obj.count; i++) {
+            var load = !i ? "" : "onload=$('.load').hide();ReaderLog('source','" + src + "')"
+            var path = "page"
+            var ext = ".mg"
+            var key = "/source/"
+            var page = i
+            if (!isWebp) {
+                path = "jpage"
+                ext = ".jpg"
+            }
+            if (d.isUseRedirect) {
+                key = d.imageResource.source
+                page = hash[i + 1] + "_big"
+            }
+            var src = key + path + obj.webp + "/" + obj.resourceId + "/" + obj.resourceId + "-" + obj.issueId + "/" + page + ext
+            var img = new Html('img', '', "id=" + i, "style=width:" + w + "px;", 'src=default.png', load)
+            var div = new Html('div', img, "class=pinch-zoom")
+            var li = new Html("li", div)
+            $("#slider ul").append(li.String())
+            ireader.pages.push(src)
+        }
+
+        ireader.init()
+        ireader.image()
+        ireader.pinch()
+
+        // 跳转原貌阅读
+        if (obj.html == "0") {
+            return
+        }
+        d.ToolIReader.push({
+            id: 5,
+            href: window.location.pathname.replace("imageReader", "epubReader"),
+            name: "文本",
+        })
+        if ($(".tool-bar").length > 0 && $(".tool-bar").html() != "") {
+            Web.Update('.tool-bar', 0)
+        }
+
+    }, 'json')
+
+    e.UserFromTouchQrcode()
+</script>

@@ -1,0 +1,292 @@
+* {
+    margin: 0;
+    padding: 0
+}
+
+body {
+    font-size: .9rem;
+}
+
+part {
+    display: block;
+}
+
+#layout-body {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+.genre,
+.body-bottom {
+    height: 4rem;
+}
+
+#layout-left {
+    text-align: center;
+    overflow: auto;
+}
+
+.page td {
+    vertical-align: top;
+}
+
+td {
+    text-align: center;
+}
+
+#layout-right {
+    overflow: auto;
+}
+
+.preview-area table {
+    width: 100%;
+}
+
+.preview-area td {
+    vertical-align: top;
+}
+
+.preview-area td a {
+    display: inline-block;
+    width: 90%;
+    padding: .5rem 0;
+}
+
+.preview-area td p {
+    width: 100%;
+}
+
+.preview-area td .text {
+    height: 1.2rem;
+    font-size: .9rem
+}
+
+.preview-area td p span {
+    width: 100%;
+    display: inline-block;
+    text-align: center
+}
+
+.preview-area img {
+    width: 100%;
+}
+
+.slice {
+    width: 100%;
+    height: 0;
+    padding-bottom: 135%;
+    overflow: hidden;
+    border: 1px #ddd solid;
+}
+
+ul.margin {
+    width: 100%;
+    list-style: none;
+    font-size: 1rem;
+    margin-left: .6rem
+}
+
+ul.margin li {
+    width: 5.8rem;
+    margin: 1rem 1.2rem;
+    line-height: 0.5rem;
+    border-radius: 2rem;
+    background-color: #F2F2F2;
+    text-align: center
+}
+
+ul.margin.nav-pills>li>a {
+    border-radius: 2rem;
+    padding: .7rem 0;
+}
+
+ul.margin>li.active>a {
+    color: #fff;
+    background-color: #00CC99
+}
+
+#layout-right {
+    position: fixed;
+    right: 0;
+    width: 7rem;
+}
+
+ul.top-line {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+ul.top-line li {
+    width: auto;
+    line-height: 3rem;
+    text-align: center;
+    border: none !important;
+}
+
+ul.top-line li a {
+    width: 100%;
+    display: inline-block;
+}
+
+ul.top-line>li.active>a {
+    background-color: #fff;
+    color: #00CC99;
+}
+
+ul.top-line a {
+    text-decoration: none
+}
+
+ul.bottom {
+    width: 100%;
+    display: block;
+    margin-top: .3rem;
+    font-size: 1rem
+}
+
+ul.bottom li {
+    width: 32.5%;
+    display: inline-block;
+    text-align: center
+}
+
+ul.bottom.nav-pills>li>a {
+    background-color: #E0E0E0;
+}
+
+ul.bottom>li.active>a {
+    color: #00CC99
+}
+
+.container>div {
+    margin: 1rem auto 5rem;
+    text-align: center;
+    width: 24rem;
+    font-size: 1.18rem
+}
+
+.load-btn {
+    width: 18rem;
+    background-color: #F2F2F2;
+    border: none;
+    line-height: 4rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 2.3rem 0 1.2rem
+}
+
+.login input {
+    width: 90%
+}
+
+.ensure {
+    text-align: center
+}
+
+.login .btn {
+    margin: 0 1rem
+}
+
+.login p {
+    font-size: 0.95rem
+}
+
+
+/**用户登录 */
+
+.login img {
+    width: 150px;
+}
+
+.input-group {
+    margin-bottom: 5px;
+    width: 100%;
+}
+
+.close {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 2.5rem;
+    line-height: 2.3rem;
+    width: 2.5rem;
+    color: #333;
+    text-align: center;
+    vertical-align: middle;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+
+
+/*登录框placeholder样式*/
+
+input.username::-webkit-input-placeholder,
+input.password::-webkit-input-placeholder {
+    color: #CBCBCB;
+}
+
+input.username::-moz-placeholder,
+input.password::-moz-placeholder {
+    color: #CBCBCB;
+}
+
+input.username:-ms-input-placeholder,
+input.password:-ms-input-placeholder {
+    color: #CBCBCB;
+}
+
+input.username:-moz-placeholder,
+input.password:-moz-placeholder {
+    color: #CBCBCB;
+}
+
+.username {
+    background-image: url('username.png');
+    background-repeat: no-repeat;
+    background-size: auto 80%;
+    background-position: 5% center;
+    background-color: #A7A7A7;
+    padding: 6% 0 6% 12%;
+    border-radius: 20px;
+}
+
+.password {
+    background-image: url('password.png');
+    background-repeat: no-repeat;
+    background-size: auto 80%;
+    background-position: 5% center;
+    background-color: #A7A7A7;
+    padding: 6% 0 6% 12%;
+    border-radius: 20px;
+}
+
+.wl .btn {
+    width: 88%;
+    /*font-size:18px;*/
+    color: #fff;
+    margin-left: 1%;
+    margin-top: 3%;
+    outline: none;
+    border-radius: 20px;
+    background-color: #E64A1A;
+}
+
+.navbar {
+    z-index: 999999;
+}
+
+.page-search {
+    display: none;
+}
+
+.nav-pills>li.active>a,
+.nav-pills>li.active>a:focus,
+.nav-pills>li.active>a:hover {
+    background-color: #E0E0E0;
+}
+
+.tool-bar .nav {
+    background: #fff
+}

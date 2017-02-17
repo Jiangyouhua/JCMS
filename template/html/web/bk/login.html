@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no, initial-scale=1">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js"></script>
+    <script src="user.js"></script>
+    <script src="default.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="default.css">
+</head>
+
+<body>
+
+<div class="container">
+    <!--页面头-->
+    <div id="header" style="margin-top:15px;">
+        <part data-name="PartLog" data-source='OrgProduct/LogInstance' data-class='nav-log' class="col-md-3 col-sm-4"></part>
+        <!--<part data-name="PartSearch" class="col-md-6" data-class="searching"></part>-->
+        <h3 class="col-md-2 col-sm-4 " style="margin-left:-30px">欢迎登录</h3>
+    </div>
+</div>
+<div style="margin:5px 0 0;position:relative">
+    <img src="login.png" alt="" style="width:100%">
+    <part data-name="PartLogin" data-class="login loging"></part>
+</div>
+
+<div class="container">
+    <!--底部菜单-->
+        <div style="clear:both;">
+            <part data-name="PartMenu" data-source='BottomMenu' data-class="nav nav-pills bottom bottoming"></part>
+        </div>
+        
+
+        <div style="clear:both">
+            <!--连接方式-->
+            <part data-name="PartArticle" data-source='IssueInfo/NoTitle/genre/4/iid/98' data-class="footer bottoming"></part>
+        </div>
+</div>
+
+</body>
+
+<script>
+        var interValObj; // timer计时器
+        var count = 60; // 倒计时总秒数
+        var curCount; // 剩余秒数
+        var code = ''; // 验证码
+
+        var isPasswdOrVirityCode
+
+        // 倒计时间隔回调
+        function timerHandle() {
+            if (curCount === 0) {
+                window.clearInterval(interValObj);
+                $('#login-btn-code').removeAttr('disabled')
+                $('#login-btn-code').text('重新发送验证码');
+                code = '';
+            } else {
+                curCount--;
+                $('#login-btn-code').text('请在' + curCount + '秒内输入验证码');
+            }
+        }
+
+        // 获取验证码
+        function getVerifyCode() {
+            curCount = count;
+            var username = $('input[type=text]').val();
+            if (username != '') {
+                isPasswdOrVirityCode = !isPasswdOrVirityCode
+                $('#login-btn-code').attr('disabled', 'true');
+                $('#login-btn-code').text('请在' + curCount + '秒内输入验证码');
+                interValObj = window.setInterval(timerHandle, 1000);
+            } else {
+                $('.login-msg-error-text').text('手机号码不能为空！');
+            }
+        }
+
+    $(document).ready(function () {
+
+        $('#login-btn-login').click(function () {
+            var username = $('input[type=text]').val()
+            var passwd = $('input[type=password]').val()
+            if (username === ''/* || passwd === ''*/) {
+                $('.login-msg-error-text').text('用户名或密码（验证码）不能为空!')
+                return
+            }
+            e.userInfo(username, passwd, function () {
+                window.history.back();
+                return false;
+            })
+        });
+
+        $('#login-btn-code').click(function() {
+            getVerifyCode();
+        });
+    });
+</script>
+
+
+</html>

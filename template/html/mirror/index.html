@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no, initial-scale=1">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="default.css">
+    <script src="jquery.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js"></script>
+    <script src="user.js"></script>
+</head>
+
+<body>
+
+    <!--标题栏-->
+    <div id="top-nav">
+        <div class="container-fluid top-title">
+            <div style="display:inline-block; width:70%;vertical-align:text-bottom">
+                <h3>中国国家图书馆</h3>
+            </div>
+            <div style="display:inline-block; width:29%;text-align:right">
+                <Part id="jcms-index-0" data-name="PartSearch" data-attr="name=search" data-class="searching" data-operate='{"search":".search"}'>
+                </Part>
+            </div>
+        </div>
+        <div class="top-menu">
+            <Part id="jcms-index-1" data-name="PartMenu" data-source='SourceCategory/MenuCategory/genre/1/gategory/0/index/1' data-class="nav nav-pills nav-justified">
+            </Part>
+        </div>
+    </div>
+
+    <!--资源预览-->
+    <div class="content-body">
+        <div class="source-category">
+            <Part id="jcms-index-2" data-name="PartPreview" data-source='CategoryIssue/PreviewItems/genre/0/category/0/page/1/num/32/index/1' data-config='{"column":8,"row":4,"load":32}' class="preview-area load-more" data-goto="image">
+            </Part>
+        </div>
+        <div class="source-search">
+            <Part id="jcms-index-3" data-name="PartPreview" data-source='SourceSearch/SearchItems/search/0' data-config='{"column":8,"row":4,"load":24}' class="preview-area search">
+            </Part>
+        </div>
+    </div>
+
+
+</html>
+<script src="default.js"></script>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no, initial-scale=1">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="default.css?20170105">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js?20170105"></script>
+    <script src="user.js?20170105"></script>
+    <script src="default.js?20170105"></script>
+</head>
+
+<body>
+    <div class="container" style="margin-top:2rem;width:24rem">
+        <part data-name="PartSearch" data-attr="name=search" data-class="searching" data-operate='{"search":".search"}'></part>
+    </div>
+    <!--资源预览-->
+    <part data-name="PartPreview" data-source='SourceSearch/SearchItems/' data-config='{"column":4, "row": 300, "load": 18}' class="preview-area search"></part>
+
+    <!--底部菜单1-->
+    <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:#E0E0E0">
+        <part data-name="PartMenu" data-source='ToolBottom' data-class="nav nav-pills bottom"></part>
+    </nav>
+</body>
+
+</html>

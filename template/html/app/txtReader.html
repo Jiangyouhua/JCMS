@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="swiper.min.css">
+    <link rel="stylesheet" href="default.css?20170105">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js?20170105"></script>
+    <script src="user.js?20170105"></script>
+    <script src="default.js?20170105"></script>
+    <script src="hammer.min.js"></script>
+
+    <style type="text/css">
+        body {
+            font-size: 1rem;
+        }
+        
+        .swiper-wrapper {
+            z-index: 1;
+        }
+        
+        .nav {
+            position: fixed;
+            bottom: 0;
+            line-height: 3rem;
+            z-index: 99;
+            width: 100%;
+            margin: 0 auto;
+            background: #fff;
+        }
+        
+        .catalog {
+            position: fixed;
+            bottom: 3.5rem;
+            padding: .2rem .5rem 1rem;
+            line-height: 2rem;
+            z-index: 99;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background-color: #f2f2f2;
+            display: none;
+        }
+        
+        .pc-catalog>ul {
+            list-style: none;
+            margin: 0;
+            padding-left: 1rem
+        }
+        
+        .pc-catalog>ul>li>a {
+            color: #000;
+        }
+        
+        #content {
+            padding: 1rem .5rem 4rem .5rem;
+        }
+        
+        h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .catalog-btn {
+            width: 2rem;
+            height: 2rem;
+            position: fixed;
+            right: 0;
+            border-radius: 1rem;
+            border: 1px #ddd solid;
+            line-height: 1.5rem;
+            background: #9cb4b5;
+            text-align: center;
+        }
+    </style>
+    <script>
+        d.ToolIReader = [{
+            id: 1,
+            href: "#",
+            name: "返回",
+            onclick: "e.backFromReader(); return false;"
+        }, {
+            id: 1,
+            href: "#",
+            name: "封面",
+            onclick: "treader.goto(2); return false;"
+        }, {
+            id: 1,
+            href: "#",
+            name: "往期",
+            onclick: "e.issues(); return false;"
+        }, {
+            id: 1,
+            href: "#",
+            name: "目录",
+            onclick: "treader.catalog(); return false;"
+        }, ]
+        var url = new Url()
+        if (url.GetGenre() == 3) {
+            delete d.ToolIReader[3]
+        }
+    </script>
+</head>
+
+
+<body>
+    <img class="load" style="width:10rem; height:10rem; margin-left:50%; left:-5rem; top:10rem; position:fixed" src="load.gif">
+    <div class='pc'>
+        <!--页面-->
+        <div id="content">
+        </div>
+        <!--目录-->
+        <div class="catalog">
+            <button class="catalog-btn" type="button" onclick="$('.catalog').hide()">X</button>
+            <part id="catalog"></part>
+        </div>
+        <!--菜单-->
+        <part data-name="PartMenu" data-source='ToolIReader' data-goto="preview" data-class="nav nav-pills nav-justified"></part>
+        <!-- 登录 -->
+        <part data-name="PartWLogin" data-class="login" data-source='Login' style="display: none;"></part>
+    </div>
+</body>
+
+</html>
+
+<!-- Swiper JS -->
+<script src="swiper.min.js"></script>
+<!-- Initialize Swiper -->
+<script>
+    var rem = Math.floor(Web.w / 25)
+    $("html").css("font-size", rem);
+    //样式处理
+    //目录
+    $(".catalog").css("width", Web.w)
+    $(".catalog").css("height", Web.h * 0.7)
+    $("#content").css("min-height", Web.h)
+
+
+    // 原貌阅读器处理类
+    var treader = {
+        current: 2, //当前页面
+        issue: {},
+        catelogs: [],
+
+        prev: function() {
+            this.current--
+                if (!!$("#catalog_" + this.current).next()[0]) {
+                    this.current--
+                }
+            if (this.current < 2) {
+                this.current = 2
+                Web.Alert("已是最前一页，请留意")
+                return
+            }
+            this.text()
+        },
+        next: function() {
+            var n = this.current + 1
+            if (!$("#catalog_" + n)[0]) {
+                Web.Alert("已是最后一页，请留意")
+                return
+            }
+            this.current = n
+            this.text()
+        },
+        goto: function(index) {
+            this.current = index
+            this.text()
+        },
+        page: function(id) {
+            this.text(id)
+        },
+        index: function(id) {
+            if (!id) {
+                id = $("#catalog_" + this.current).attr("onclick").match(/\d+/g)[0]
+            }
+            if (!!$("#catalog_" + this.current).next()[0]) {
+                this.current++
+                    id = $("#catalog_" + this.current).attr("onclick").match(/\d+/g)[0]
+            }
+            return id
+        },
+        text: function(id) {
+            if (!e.role(treader.issue.resourceId, treader.issue.issueId, treader.current, parseInt(treader.issue.toll) + 3)) {
+                return
+            }
+            $('.catalog').hide()
+            id = this.index(id)
+                // 设置分享信息
+            this.set(id)
+
+            $.post(window.location.href, {
+                handle: "PaperText",
+                text: id
+            }, function(re) {
+                if (re.status == '0') {
+                    Web.Alert(re.info)
+                    return
+                }
+                var part = new PartArticle()
+                part.SetData(re.data)
+                $("#content").html(part.Html().String())
+            }, 'json')
+        },
+        catalog: function() {
+            if (!e.OtherRole(treader.issue.resourceId, treader.issue.issueId)) {
+                return
+            }
+            $('.catalog').show()
+        },
+        init: function() {
+            //期册信息
+            $.post(window.location.href, {
+                handle: "IssueInfo"
+            }, function(re) {
+                if (re.status == 0) {
+                    Web.Alert(re.info)
+                }
+                treader.issue = re.data.length == 1 ? re.data[0] : re.data;
+
+                //目录
+                $.post(window.location.href, {
+                    handle: "IssueCatalog"
+                }, function(re) {
+                    if (re.status == 0) {
+                        Web.Alert(re.info);
+                        return
+                    }
+                    treader.catalogs = re.data;
+                    $(".load").hide();
+                    var part = new PartCatalog()
+                    part.SetData(re.data);
+                    part.SetClass("pc-catalog")
+
+                    // 判断是否是分享阅读
+                    if (window.location.href.indexOf("page@") > 0) {
+                        // 隐藏底部操作栏
+                        if (!Session.Get("user")) {
+                            $('*[data-source=ToolIReader]').hide();
+                        }
+                        var a = window.location.href.split("page@")
+                        if (a.length > 1) {
+                            treader.text(a[1])
+                            treader.current = 2
+                        }
+                    } else {
+                        if (re.data && re.data[0].sublevels && re.data[0].sublevels.length > 0) {
+                            treader.text(re.data[0].sublevels[0].id)
+                            treader.current = 2
+                        } else {
+                            treader.text(re.data[0].id)
+                            treader.current = 1
+                        }
+                    }
+                    $("#catalog").html(part.Html().String())
+                    e.LastReaderAdd(0)
+                }, 'json')
+
+                $("#content").click(function() {
+                    $(".catalog").hide()
+                })
+            }, "json")
+        },
+
+        set: function(id) {
+            var title
+            if (!!treader.catalogs) {
+                for (var i in treader.catalogs) {
+                    if (id == treader.catalogs[i].id) {
+                        title = treader.catalogs[i].name
+                    }
+                    var sublevels = treader.catalogs[i].sublevels
+                    if (sublevels.length > 0) {
+                        for (var j in sublevels) {
+                            if (id == sublevels[j].id) {
+                                title = sublevels[j].name
+                            }
+                        }
+                    }
+                }
+            }
+            var web = Session.Get("web")
+            var instanceName = ""
+            if (web != undefined && !!web && !!web.base) {
+                instanceName = web.base.title
+            }
+            document.title = !instanceName ? "" : instanceName + ":《" + treader.issue.resourceName + "》" + title
+            window.location.hash = "page@" + id
+        },
+    }
+
+
+    var hammertime = new Hammer(document.getElementById("content"));
+    hammertime.on("swipeleft", function(e) {
+        treader.next()
+
+    });
+    hammertime.on("swiperight", function(e) {
+        treader.prev()
+    });
+
+    treader.init()
+    e.UserFromTouchQrcode()
+</script>

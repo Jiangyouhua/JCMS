@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name='viewport' content='widtd=device-widtd, initial-scale=1, maximum-scale=1, user-scalable=no'>
+    <script src='jquery-3.1.0.min.js'></script>
+    <script src='bootstrap.min.js'></script>
+    <script src='system.js?20161027'></script>
+    <script src='user.js'></script>
+    <script src='default.js'></script>
+    <link rel='stylesheet' href='bootstrap.min.css'>
+    <link rel='stylesheet' href='default.css'>
+</head>
+
+<body>
+    <!--标题栏-->
+    <nav class='navbar navbar-default navbar-fixed-top'>
+        <div class='col-lg-3'>
+            <part data-name='PartLog' data-source='OrgProduct/LogInstance' data-class='nav-log'></part>
+        </div>
+        <div class='col-lg-7 text-right'>
+            <part data-name='PartWXLogin' data-class='nav nav-pills wexin'></part>
+        </div>
+        <div class='col-lg-2 text-right'>
+            <part data-name='PartDate' data-class='data'></part>
+        </div>
+    </nav>
+    <div class='col-lg-12 notes'>
+        <table class='table' id='cart-table'>
+            <thead>
+                <tr>
+                    <th>
+                        <label for='checkAll'>
+                                 <input  id='checkAll' type='checkbox' onclick="selectAll(this);">&nbsp;全选
+                             </label>
+                        <a class='fl' id='deleteAll' onclick=e.NoteAllDelete()></a>
+                        <!--<span id='selectedTotal'></span>-->
+                    </th>
+                    <th>笔记名称</th>
+                    <th>缩略图</th>
+                    <th>笔记日期</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+    <!--底部菜单-->
+    <div class='bottom-menu'>
+        <!--底部菜单1-->
+        <!--<nav class='navbar navbar-default bottom-menu-up'>
+            <div>
+                <part data-name='PartMenu' data-source='CategorySub/MenuCategory/genre/1/category/605' data-class='nav-pills nav-justified'></part> 
+            </div>
+        </nav>-->
+        <!--底部菜单2-->
+        <nav class='navbar navbar-default bottom-menu-down'>
+            <div>
+                <part data-name='PartMenu' data-source='TopMeun' data-class='nav nav-pills nav-justified' class='col-lg-12'></part>
+            </div>
+        </nav>
+    </div>
+    <script>
+        $(function() {
+            // 加载笔记数据
+            $.post(window.location.href, {
+                    handle: 'MicroJournalUserOperateList',
+                    type: '5',
+                    userId: Session.Get('user').userId.toString(),
+                    url: '',
+                    pageNum: '1',
+                    limitNum: '20'
+                },
+                function(re) {
+                    if (re.status == 0) {
+                        return
+                    }
+                    var data = re.data;
+                    for (var i = 0; i < data.length; i++) {
+                        var str = '';
+                        var id = data[i].id;
+                        var title = data[i].title;
+                        var content = data[i].content;
+                        var img = data[i].file;
+                        var time = new Date(data[i].time * 1000);
+                        var operate = "<td class='operation'><a onclick='e.look(this)' class='look'>查看</a><a class='del' id='" + id + "' onclick='e.NoteDelete(this)'>删除</a></td>";
+                        str += "<tr class='" + id + "' data=" + JSON.stringify(data[i]) + ">";
+                        str += "<td><input  type='checkbox' name='note' onclick='inverseSelect(this)'></td>";
+                        str += "<td class='titles'>" + title + "</td>";
+                        str += "<td class='imgs'><img src='" + d.imageResource['upload'] + img + "'/></td>";
+                        str += "<td class='times'>" + time.getFullYear() + " - " + (time.getMonth() + 1) + " - " + time.getDate() + "</td>";
+                        str += operate;
+                        str += "</tr>";
+                        $('tbody').append(str)
+                    }
+                }, 'json')
+        })
+    </script>
+</body>
+
+</html>

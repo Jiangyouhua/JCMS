@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no, initial-scale=1">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="default.css">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js"></script>
+    <script src="user.js"></script>
+    <script src="default.js"></script>
+</head>
+
+<body>
+    <!--标题栏-->
+    <div id="top-nav">
+        <div class="container-fluid top-title">
+            <div class="col-sm-8 log-txt">中国国家图书馆</div>
+            <div class="col-sm-4">
+            </div>
+        </div>
+        <div class="top-menu">
+            <Part data-name="PartMenu" data-source='SourceCategory/MenuCategory/genre/1/gategory/0' data-class="nav nav-pills nav-justified" data-goto="index"></Part>
+        </div>
+        <div class="top-menu">
+            <Part data-name="PartMenu" data-source='SourceYear/YearCategory' data-class="nav nav-pills"></Part>
+        </div>
+    </div>
+
+    <!--资源预览-->
+    <div class="content-body">
+        <br>
+        <br>
+        <Part data-name="PartPreview" data-source='YearIssue/YearItems' data-config='{"column":8, "row":300,"load":24}' class="preview-area" data-goto="image"></Part>
+    </div>
+</body>
+
+</html>

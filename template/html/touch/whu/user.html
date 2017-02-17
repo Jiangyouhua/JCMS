@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js?20161027"></script>
+    <script src="user.js"></script>
+    <script src="default.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="default.css">
+</head>
+
+<body>
+
+    <!--标题栏-->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="col-lg-3">
+            <part data-name="PartLog" data-source='OrgProduct/LogInstance' data-class='nav-log'></part>
+        </div>
+        <div class="col-lg-7 text-right">
+            <part data-name="PartWXLogin" data-class="nav nav-pills wexin"></part>
+        </div>
+        <div class="col-lg-2 text-right">
+            <part data-name="PartDate" data-class="data"></part>
+        </div>
+    </nav>
+    <!--<part class="ShopCart" data-name="PartMenu" data-source='UserSource' data-class="nav nav-pills del collect"></part>-->
+    <div class="item-operate">
+        <part class="ShopCart" data-name="PartMenu" data-source='UserSourceOperate' data-class="nav nav-pills del deling"></part>
+    </div>
+
+    <!--资源预览-->
+    <!--<part data-name="PartPreview" data-source='UserSourceItems/SearchItems/user/0/cache/1' data-config='{"column":6, "load":12}' class="preview-area" data-operate='{"remove":"issueId,genre"}'></part>-->
+    <!--我的书架 预览-->
+    <part data-name="PartPreview" data-source='UserSourceItems/SearchItems/user/0/genre/4/cache/1' data-config='{"column":6, "load":12}' class="preview-area shelf" id="preview-0" data-class="shelves"></part>
+    <!--<part style="display:none" data-name="PartPreview" data-source='UserSourceItems/SearchItems/user/0/genre/2/cache/1' data-config='{"column":6, "load":12}'
+                class="preview-area shelf" id="preview-1"></part>
+            <part  style="display:none" data-name="PartPreview" data-source='UserSourceItems/SearchItems/user/0/genre/3/cache/1' data-config='{"column":6, "load":12}'
+                class="preview-area shelf" id="preview-2"></part>-->
+
+    <!--底部菜单-->
+    <div class="bottom-menu">
+        <!--底部菜单2-->
+        <nav class="navbar navbar-default bottom-menu-down">
+            <div>
+                <part data-name="PartMenu" data-source='TopMeun' data-class="nav nav-pills nav-justified" class="col-lg-12"></part>
+            </div>
+        </nav>
+    </div>
+</body>
+
+</html>

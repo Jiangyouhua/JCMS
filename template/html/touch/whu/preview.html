@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js"></script>
+    <script src="user.js"></script>
+    <script src="default.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="default.css">
+</head>
+
+<body>
+    <!--标题栏-->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="col-lg-3">
+            <part data-name="PartLog" data-source='OrgProduct/LogInstance' data-class='nav-log'></part>
+        </div>
+        <div class="col-lg-7 text-right">
+            <part data-name="PartWXLogin" data-class="nav nav-pills wexin"></part>
+        </div>
+        <div class="col-lg-2 text-right">
+            <part data-name="PartDate" data-class="data"></part>
+        </div>
+    </nav>
+    <div class="load-moring">
+        <!--资源预览-->
+        <part data-name="PartPreview" data-source='CategoryIssue/ArticleItems/genre/4/category/0/page/1/num/12' data-config='{"column":6,"load":12}' class="preview-area load-more" data-class="source"></part>
+    </div>
+
+
+    <!--底部菜单-->
+    <div class="bottom-menu">
+        <!--底部菜单1-->
+        <nav class="navbar navbar-default bottom-menu-up">
+            <div>
+                <part data-name="PartMenu" data-source='CategorySub/MenuCategory/genre/4/category@topmenu/0' data-class="nav-pills nav-justified" data-goto="preview"></part>
+            </div>
+        </nav>
+        <!--底部菜单2-->
+        <nav class="navbar navbar-default bottom-menu-down">
+            <div>
+                <part data-name="PartMenu" data-source='TopMeun' data-class="nav nav-pills nav-justified" data-attr="name=category" class="col-lg-12" data-class="nav-justified"></part>
+            </div>
+        </nav>
+        <input name="category" type="hidden" value=0>
+    </div>
+</body>
+
+</html>

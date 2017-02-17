@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js"></script>
+    <script src="user.js"></script>
+    <script src="default.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="default.css">
+    <!--<link rel="stylesheet" href="main.css">-->
+</head>
+
+<body>
+    <div class="top">
+        <!--状态栏-->
+        <div class="container">
+            <span class="col-md-5 col-sm-5">欢迎来到博看网</span>
+            <part data-name="PartUserLi" data-source='UserMenu' data-class="user" class="col-md-7 col-sm-7"></part>
+            <part data-name="PartLogin" data-class="login" data-source='Login' style="display: none;"></part>
+        </div>
+    </div>
+
+    <div class="container">
+        <!--页面头-->
+        <div id="header">
+            <part data-name="PartLog" data-source='OrgProduct/LogInstance' data-class='nav-log' class="col-md-6 col-sm-6"></part>
+            <part data-name="PartSearch" class="col-md-6 col-sm-6" data-class="searching" data-operate='{"search":".search"}'></part>
+        </div>
+    </div>
+    <div class="top-nav">
+        <div id="nav" class="container">
+            <!--导航栏-->
+            <part data-name="PartMenu" data-source='WebNav' data-class="nav-items"></part>
+        </div>
+    </div>
+    <div class="container">
+        <div class="mag">
+            <!--杂志-->
+            <!--杂志区 索引-->
+            <div class="list-area">
+                <div class="list-title">杂志分类</div>
+                <part data-name="PartList" data-source='CategorySub/MagazineCategory/genre/1/category/159,236,243,259,262,268,272,274,279,283,287,289,294' data-goto="magazine" data-class="sub-cate-items"></part>
+            </div>
+            <div class="ading">
+                <part data-name="PartAd" data-source='CategoryIssue/AdItems/genre/4/category/13' data-class="ad"></part>
+            </div>
+            <div style="width:190px;">
+                <h4 class="rank-title">热门排行</h4>
+                <part data-name="PartMenu" data-source='CategoryIssue/ListItems/genre/1/category/313' data-class="rank rank-index rank-mag"></part>
+            </div>
+        </div>
+
+
+        <!--杂志区 预览-->
+        <div style="clear:both;border:1px solid #EDEDED;margin-bottom:20px;">
+            <part data-name="PartMenu" data-source='[{"name":"新品速递", "onmouseover":"e.MagazineTab(this, 0, 2)","class":"active"},{"name":"热销排行", "onmouseover":"e.MagazineTab(this, 1, 2)"}]' data-class="naving-tab"></part>
+            <part id="magazine-0" data-name="PartPreview" data-source='CategoryIssue/PreviewLimit/genre/1/category/314/num/12/page/1' data-config='{"column":6, "buy":1}' class="preview-area pre"></part>
+            <part id="magazine-1" data-name="PartPreview" data-source='CategoryIssue/PreviewLimit/genre/1/category/315/num/12/page/1' data-config='{"column":6, "buy":1}' class="preview-area pre"></part>
+        </div>
+
+
+        <!--图书-->
+        <!--图书区 索引-->
+        <div class="mag" style="margin-bottom:40px;overflow:hidden;">
+            <div class="list-area">
+                <div class="list-title">图书分类</div>
+                <part data-name="PartList" data-source='CategorySub/MagazineCategory/genre/3/category/1724,2221,2230,2240,2244,2253,2259,2271' data-goto="book" data-class="sub-cate-items sub-book"></part>
+            </div>
+            <div class="ading">
+                <part data-name="PartAd" data-source='CategoryIssue/AdItems/genre/4/category/16' data-class="ad ad-book"></part>
+            </div>
+            <div style="width:190px;">
+                <h4 class="rank-title">热门排行</h4>
+                <part data-name="PartMenu" data-source='CategoryIssue/ListItems/genre/3/category/2279' data-class="rank rank-index rank-book"></part>
+            </div>
+        </div>
+
+
+        <!--图书区 预览-->
+        <div style="clear:both;border:1px solid #EDEDED;margin-bottom:30px;">
+            <part data-name="PartMenu" data-source='[{"name":"新品速递", "onmouseover":"e.BookTab(this,0,2)","class":"active"},{"name":"热销排行", "onmouseover":"e.BookTab(this,1,2)"}]' data-class="naving-tab"></part>
+            <part id="Book-0" data-name="PartPreview" data-source='CategoryIssue/PreviewLimit/genre/3/category/2277/num/12/page/1' data-config='{"column":6,"buy":1}' class="preview-area pre"></part>
+            <part id="Book-1" data-name="PartPreview" data-source='CategoryIssue/PreviewLimit/genre/3/category/2278/num/12/page/1' data-config='{"column":6,"buy":1}' class="preview-area pre"></part>
+        </div>
+
+
+        <!--友情连接-->
+        <!--<h5 style="padding-bottom:5px;border-bottom:1px solid #ccc;">友情链接</h5>
+        <part data-name="PartArticle" data-source='IssueInfo/NoTitle/genre/4/iid/97' data-class="links"></part>-->
+
+        <!--底部菜单-->
+        <div style="clear:both;">
+            <part data-name="PartMenu" data-source='BottomMenu' data-class="nav nav-pills bottom"></part>
+        </div>
+
+
+        <div style="clear:both;position:relative">
+            <!--连接方式-->
+            <span style="position:absolute;bottom:148px;right:320px;">
+              <a href="http://whgswj.whhd.gov.cn:8089/whwjww/indexquery/indexqueryAction!dizview.dhtml?chr_id=852d3fc9da8bbee356475be9c28cf59f&bus_ent_id=420000000008757161&bus_ent_chr_id=fff04be1bf3e41eba594e0f9eca7c9f8" target="_blank">
+                    <img src="ds.png" alt="">工商网监
+              </a>      
+           </span>
+            <part data-name="PartArticle" data-source='IssueInfo/NoTitle/genre/4/iid/98' data-class="footer"></part>
+
+        </div>
+    </div>
+</body>
+
+</html>

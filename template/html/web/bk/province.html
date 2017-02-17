@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js"></script>
+    <script src="user.js"></script>
+    <script src="default.js"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="default.css">
+</head>
+
+<body>
+
+    <!--标题栏-->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="col-lg-6">
+            <part data-name="PartLog" data-source='OrgProduct/LogInstance' data-class='nav-log'></part>
+        </div>
+        <div class="col-lg-4 text-right">
+            <part data-name="PartWXLogin" data-class="nav nav-pills wexin"></part>
+        </div>
+        <div class="col-lg-2 text-right">
+            <part data-name="PartDate" data-class="data"></part>
+        </div>
+    </nav>
+
+    <!--资源预览-->
+    <part data-name="PartPreview" data-source='PaperProvince/PreviewItems' data-config='{"column":6}' class="preview-area"></part>
+
+    <!--底部菜单-->
+    <div class="bottom-menu">
+        <!--底部菜单1-->
+        <nav class="navbar navbar-default bottom-menu-up">
+            <div>
+                <part data-name="PartMenu" data-source='SourceCategory/MenuCategory' data-class="nav-pills nav-justified"></part> 
+            </div>
+        </nav>
+        <!--底部菜单2-->
+        <nav class="navbar navbar-default bottom-menu-down">
+            <div>
+                <part data-name="PartMenu" data-source='OrgProduct/MenuProduct'  data-goto="preview" data-class="nav nav-pills nav-justified" class="col-lg-8 col-lg-offset-2"></part>
+            </div>
+        </nav>
+    </div>
+</body>
+
+</html>

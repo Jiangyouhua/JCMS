@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name='viewport' content='widtd=device-widtd, initial-scale=1, maximum-scale=1, user-scalable=no'>
+    <script src='jquery-3.1.0.min.js'></script>
+    <script src='bootstrap.min.js'></script>
+    <script src='system.js?20161027'></script>
+    <script src='user.js'></script>
+    <script src='default.js'></script>
+    <link rel='stylesheet' href='bootstrap.min.css'>
+    <link rel='stylesheet' href='default.css'>
+</head>
+
+<body>
+    <!--标题栏-->
+    <nav class='navbar navbar-default navbar-fixed-top'>
+        <div class='col-lg-3'>
+            <part data-name='PartLog' data-source='OrgProduct/LogInstance' data-class='nav-log'></part>
+        </div>
+        <div class='col-lg-7 text-right'>
+            <part data-name='PartWXLogin' data-class='nav nav-pills wexin'></part>
+        </div>
+        <div class='col-lg-2 text-right'>
+            <part data-name='PartDate' data-class='data'></part>
+        </div>
+    </nav>
+    <div class='col-lg-12' id="noteDetail">
+    </div>
+    <!--底部菜单-->
+    <div class='bottom-menu'>
+        <!--底部菜单1-->
+        <!--<nav class='navbar navbar-default bottom-menu-up'>
+            <div>
+                <part data-name='PartMenu' data-source='CategorySub/MenuCategory/genre/1/category/605' data-class='nav-pills nav-justified'></part> 
+            </div>
+        </nav>-->
+        <!--底部菜单2-->
+        <nav class='navbar navbar-default bottom-menu-down'>
+            <div>
+                <part data-name='PartMenu' data-source='TopMeun' data-class='nav nav-pills nav-justified' class='col-lg-12'></part>
+            </div>
+        </nav>
+    </div>
+    <script>
+        $(function() {
+
+            var user = Session.Get("user")
+            var data = JSON.parse(Session.Get('noteDetail'))
+            var str = '';
+            var id = data.id;
+            var title = data.title;
+            var content = data.content;
+            var img = data.file;
+            var operate = "<div class='operation'><a class='del' id='" + id + "' onclick='e.NoteDelete(this)'>删除</a></div>";
+            str += "<div class='users'>" + "<img src='" + user.headimgurl + "' class='userImg'/>" + "<span class=userName>" + user.nickname + "</span>"
+            str += "<a class='myNote' href='note'>我的笔记</a></div>"
+            str += "<table class='tableLook'><tr><td rowspan='2'><img src='" + d.imageResource['upload'] + img + "' class='looks'/></td>";
+            str += "<td class='titles'>笔记标题：" + title + "</td></tr>"
+            str += "<tr><td class='contents'>笔记内容：" + content + "</td></tr></table>"
+            str += operate
+            $('#noteDetail').attr('class', id)
+            $('#noteDetail').append(str)
+        })
+    </script>
+</body>
+
+</html>

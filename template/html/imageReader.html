@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="system.js?20170105"></script>
+    <script src="user.js?20170105"></script>
+    <script src="default.js?20170105"></script>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="swiper.min.css">
+    <link rel="stylesheet" href="default.css?20170105">
+    <style type="text/css">
+        body {
+            font-size: 3rem;
+            overflow-x: hidden;
+            -webkit-user-select: none;
+            /* Webkit */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* IE10+ */
+            cursor: pointer;
+            /*overflow: hidden;*/
+        }
+        
+        a:hover {
+            color: #444;
+            text-decoration: none;
+        }
+        /* 鼠标指针移动到链接上 */
+        
+        #area iframe {
+            border: none;
+        }
+        
+        #prev {
+            left: 40px;
+        }
+        
+        #next {
+            right: 40px;
+        }
+        
+        .arrow:hover {
+            color: #777;
+        }
+        
+        .arrow:active {
+            color: #000;
+        }
+        /*pc*/
+        
+        .pc div.catalog {
+            display: flex;
+            position: absolute;
+            background: #ddd;
+            border: 1px #888 solid;
+            overflow-y: auto;
+            z-index: 999;
+            display: none;
+        }
+        
+        .content {
+            z-index: 1;
+        }
+        
+        .pc .pc-catalog ul {
+            list-style: none;
+        }
+        
+        .pc .pc-catalog>ul>li>a {
+            color: #000;
+        }
+        
+        .pc .pc-catalog>ul>li>a:hover {
+            text-decoration: none
+        }
+        
+        .pc .pc-catalog>ul {
+            float: left;
+            width: 41rem;
+            line-height: 3.5rem;
+            margin: 4rem 0 0 5rem;
+            overflow: hidden;
+            width: 70rem !important;
+            line-height: 6rem !important;
+            margin: 4rem 0 0 10rem !important;
+        }
+        /*IE*/
+        
+        _:-ms-lang(x),
+        _:-webkit-full-screen,
+        .pc .pc-catalog>ul {
+            float: left;
+            width: 70rem;
+            line-height: 6rem;
+            margin: 4rem 0 0 10rem;
+            overflow: hidden;
+        }
+    </style>
+    <script>
+        // 阅读页工具
+        var url = new Url()
+        if (url.GetGenre() == 3) {
+            delete d.ToolIReader[2]
+        }
+        var web = Session.Get("web")
+        if (!!web.base.type && web.base.type == 1) {
+            delete d.ToolIReader[3]
+        }
+    </script>
+</head>
+
+
+<body onselectstart="return false">
+    <div class='pc'>
+        <!--页面-->
+        <div id="prev" onclick="ireader.prev(this);" class="arrow">‹</div>
+        <div class="content">
+            <!-- Swiper -->
+            <div class="swiper-container">
+                <div class="swiper-wrapper">
+                </div>
+            </div>
+        </div>
+        <div id="next" onclick="ireader.next(this);" class="arrow">›</div>
+
+        <!--目录-->
+        <div class="catalog">
+            <button class="catalog-btn" type="button" onclick="$('.catalog').hide()">×</button>
+            <part data-name="PartCatalog" data-source='IssueCatalog/CatalogItems' data-goto="preview" data-class="pc-catalog"></part>
+        </div>
+
+        <!--菜单-->
+        <div class="tool">
+            <part data-name="PartMenu" data-source='ToolIReader' data-goto="preview" data-class="read"></part>
+        </div>
+    </div>
+    <img id="full-img" src="" style="display:none;z-index:99999;position: absolute;top:0; left:0;" ondblclick="$(this).hide()">
+    <img class="load" style="width:10rem; height:10rem; margin-left:50%; left:-5rem; top:50rem; position:fixed" src="load.gif">
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">系统提示</h4>
+                </div>
+                <div class="modal-body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-buy">立即购买</button>
+                    <button type="button" class="btn btn-join">加入购物车</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+<!-- Swiper JS -->
+<script src="swiper.min.js"></script>
+<!-- Initialize Swiper -->
+<script>
+    //样式处理
+
+    $('.btn-buy').click(function() {
+        var url = new Url()
+        var genre = url.GetGenre()
+        var iid = url.GetIid()
+        e.BuyItem(this, genre, iid)
+    });
+    $('.btn-join').click(function() {
+        var url = new Url()
+        var genre = url.GetGenre()
+        var iid = url.GetIid()
+        e.AddCart(this, genre, iid)
+    });
+    var padding = 300
+    if (!isWebp) {
+        padding = 300
+    }
+
+    //目录
+    $(".catalog").css("width", Web.w - padding)
+    $(".catalog").css("height", Web.h - padding)
+    $(".pc-catalog>ul").css("height", Web.h - padding)
+    $(".catalog").css("left", padding / 2)
+    $(".catalog").css("top", padding / 2)
+
+    // 原貌阅读器处理类
+    var ireader = {
+        m: 2, // 显示页页数，
+        pages: [], //初始化至内存的页面
+        current: 0, //当前页面
+        issue: {}, //期数据
+        step: 400, //左右留白
+        swiper: {},
+        //clickTag: 0, // 防止多次点击
+
+        prev: function(it) {
+            this.swiper.slidePrev();
+            ireader.clickTag = 1;
+            setTimeout(function() {
+                ireader.clickTag = 0;
+            }, 500);
+        },
+        next: function(it) {
+            this.swiper.slideNext();
+            ireader.clickTag = 1;
+            setTimeout(function() {
+                ireader.clickTag = 0;
+            }, 500);
+        },
+        goto: function(index) {
+            this.current = index
+            this.image()
+            this.swiper.slideTo(index, 1000, false)
+        },
+        page: function(index) {
+            $(".catalog").hide()
+            var p = parseInt(index) + parseInt(ireader.issue.start)
+            if (!e.role(ireader.issue.resourceId, ireader.issue.issueId, p, ireader.issue.toll)) {
+                ireader.goto(ireader.current);
+                return
+            }
+            this.goto(p)
+        },
+        image: function() {
+            if (this.current > 0 && this.current < this.pages.length) {
+                $("div#" + this.current + " img").attr("src", this.pages[this.current])
+            }
+            var index = this.current + 1
+            if (index > 0 && index < this.pages.length) {
+                $("div#" + index + " img").attr("src", this.pages[index])
+            }
+            var index = this.current - 1
+            if (index > 0 && index < this.pages.length) {
+                $("div#" + index + " img").attr("src", this.pages[index])
+            }
+        },
+        catalog: function() {
+            if (!e.OtherRole(ireader.issue.resourceId, ireader.issue.issueId)) {
+                return
+            }
+            $('.catalog').show()
+        },
+        init: function() {
+            e.LastReaderAdd(0)
+            if (Web.w < Web.h) {
+                this.m = 1
+            }
+            $(".swiper-container ").css('width', Web.h * 1.5)
+            $(".swiper-container ").css('height', Web.h)
+            this.swiper = new Swiper('.swiper-container', {
+                slidesPerView: this.m,
+                slidesPerGroup: this.m,
+                observer: true,
+                onSlideNextEnd: function(swiper) {
+                    ireader.current = swiper.activeIndex
+                    if (ireader.current > ireader.pages.length) {
+                        Web.Alert("已是最后一页，请留意")
+                        ireader.current = ireader.pages.length
+                    }
+                    ireader.image();
+                    if (!e.role(ireader.issue.resourceId, ireader.issue.issueId, ireader.current, ireader.issue.toll)) {
+                        ireader.current = ireader.issue.toll;
+                        ireader.goto(ireader.current);
+                        return
+                    }
+                },
+                onSlidePrevEnd: function(swiper) {
+                    ireader.current = swiper.activeIndex
+                    if (ireader.current < 1) {
+                        Web.Alert("已是最前一页，请留意")
+                        ireader.current = 0
+                    }
+                    ireader.image();
+                    if (!e.role(ireader.issue.resourceId, ireader.issue.issueId, ireader.current, ireader.issue.toll)) {
+                        ireader.current = ireader.issue.toll;
+                        ireader.goto(ireader.current);
+                        return
+                    }
+                },
+                // observeParents: true
+            });
+        }
+    }
+
+    $.post(window.location.href, {
+        handle: "IssueInfo"
+    }, function(re) {
+        if (re.status == 0) {
+            Web.Alert("加载数据失败，请留意")
+            return
+        }
+        if (!re.data || !re.data[0] || !re.data[0].count) {
+            Web.Alert("加载数据错误，请留意")
+            return
+        }
+        var obj = re.data[0]
+        ireader.issue = re.data.length == 1 ? re.data[0] : re.data
+
+        var w = Math.floor((Web.h * 1.5) / 2)
+        var hash = obj.hash.split(",")
+        for (var i = 0; i <= obj.count; i++) {
+            var path = "page"
+            var index = obj.webp
+            var ext = ".mg"
+            var key = "/source/"
+            var page = i
+            if (!isWebp || obj.webp == 0 || obj.webp == "0") {
+                path = "jpage"
+                ext = ".jpg"
+                index = obj.jpg
+            }
+            if (d.isUseRedirect) {
+                key = d.imageResource.source
+                page = hash[i] + "_big"
+            }
+            var src = key + path + index + "/" + obj.resourceId + "/" + obj.resourceId + "-" + obj.issueId + "/" + page + ext
+            var onload = "onload=$('.load').hide();ReaderLog('source','" + src + "')";
+            if (!i) {
+                src = ""
+                onload = ""
+            }
+            var img = new Html('img', '', "style=width:" + w + "px; height:" + Web.h + "px", 'src=' + '', onload)
+            var div = new Html('div', "", "class=swiper-slide", "id=" + i);
+            div.AddContent(img);
+            $(".swiper-wrapper").append(div.String());
+            ireader.pages.push(src);
+        }
+
+        $("#0 img").attr("src", "ad.png");
+        $("#1 img").attr("src", ireader.pages[1]);
+
+        setTimeout(function() {
+            ireader.swiper.slideTo(0, 0, false)
+        }, 50)
+
+    }, 'json')
+
+    $(".content").on('dblclick', 'img', function() {
+        $("#full-img").attr("src", $(this).attr("src"))
+        $("#full-img").attr("width", Web.w)
+        $("#full-img").show()
+    })
+
+    ireader.init()
+</script>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no, initial-scale=1">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="default.css?20170105">
+    <script src="jquery-3.1.0.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="http://api.map.baidu.com/api?v=1.2" type="text/javascript"></script>
+    <script src="system.js?20170105"></script>
+    <script src="user.js?20170105"></script>
+</head>
+
+<body>
+
+    <!--标题栏-->
+    <table id="layout-body">
+        <tr>
+            <td colspan="2" style="background-color:#ccc;" class="genre page-tb page-index">
+                <part data-name="PartMenu" data-source='OrgProduct/MenuProduct' data-class="nav nav-pills margin"></part>
+            </td>
+            <td colspan="2" style="padding:20px 20px 10px 20px" class="genre page-tb page-search">
+                <part data-name="PartSearch" data-attr="name=search" data-class="searching" data-operate='{"search":".search"}'></part>
+            </td>
+        </tr>
+
+        <!--资源预览-->
+        <tr>
+            <td style="vertical-align: top;" class="page-tb page-index">
+                <div id="layout-left">
+                    <part data-name="PartPreview" data-source='CategoryIssue/PreviewItems/genre/0/category/0/page/1/num/12/index/1/erea/0' data-config='{"column":3,"row":4,"load":12}' class="preview-area load-more" data-goto="image"></part>
+                </div>
+            </td>
+            <td style="vertical-align: top; width:27%; background:#eee;" class="page-tb page-index">
+                <div id="layout-right" class="category">
+                    <part data-name="PartMenu" data-source='SourceCategory/MenuCategory' data-class="top-line"></part>
+                </div>
+            </td>
+            <td colspan="2" class="page-tb page-search" style="vertical-align: top;">
+                <part data-name="PartPreview" data-source='SourceSearch/SearchItems/genre/1,2,3/search/' data-config='{"column":4, "row": 300, "load": 16}' class="preview-area search" data-class="source"></part>
+            </td>
+        </tr>
+        <!--底部菜单1-->
+        <tr>
+            <td class="body-bottom" colspan="2">
+                <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:#E0E0E0">
+                    <div>
+                        <part data-name="PartMenu" data-source='ToolBottom' data-class="nav nav-pills bottom"></part>
+                    </div>
+                </nav>
+            </td>
+        </tr>
+    </table>
+    <!-- 登录 -->
+    <part data-name="PartWLogin" data-class="login" data-source='Login' style="display: none;"></part>
+    <input type='hidden' value="" name="search">
+</body>
+
+</html>
+<script src="default.js?20170105"></script>
